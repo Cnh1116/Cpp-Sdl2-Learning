@@ -3,9 +3,14 @@
 The window class has a update method. Maybe ESC quits, ` opens debug menu. How to get native resolution ?
 Sprite Class
 Item Class
-Player Class
+Logging Class
+Player Class -> A sprite, stats, abilities
 Enemy Class
 Math Class
+Sound Class
+Ability Class -> Button to be pressed, item interactions, sprite to show, sound to make
+
+Game Class: has a player, enemy spawner, item spawner game and debug window
 
 
 --- Goals ---
