@@ -21,6 +21,7 @@ Math Class
 1. Make the game _9_ tiles wide. ITems can spawn on the "bridge". _3_ tiles wide. Bridge shifts collumns over time.
 2. Having a primary fire to straight forward, secondary fire to pick up items on the "bridge"
 3. A full body shield that breaks when hit. Has X amoount of cooldown. Make this act like a parry, very low amount of time active and then a quick cooldown to use it again.
+  3.a. Shield should record how much damage attack was: normalize 1 damage to MAX_IN_GAME damage, and multiply this percentage to a max frequency sound to play when absorbing damage. higher pitch for absorbing more damage.
 
 --- Item Ideas ---
 
