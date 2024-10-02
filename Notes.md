@@ -1,6 +1,6 @@
 --- Class Organization / Functionality ---
 
-The window class has a update method. Maybe ESC quits, ` opens debug menu
+The window class has a update method. Maybe ESC quits, ` opens debug menu. How to get native resolution ?
 Sprite Class
 Item Class
 Player Class
