@@ -26,7 +26,7 @@ Math Class
 
 --- Item Ideas ---
 
-- Ruby Radio - Fire Damage 🔥
+- Ruby Radio - Fire Damage 🔥 Maybe you BECOME fire, and grabbing a diff element changes current type
 - Saphire ... Ice Damage ❄️
 - Emerald ... Poison / Nature ? 🌱
 - Diamond ... Arcane / 🔮
