@@ -24,15 +24,15 @@ Math Class
 
 --- Item Ideas ---
 
-Ruby Radio - Fire Damage 🔥
-Saphire ... Ice Damage ❄️
-Emerald ... Poison / Nature ? 🌱
-Diamond ... Arcane / 🔮
+- Ruby Radio - Fire Damage 🔥
+- Saphire ... Ice Damage ❄️
+- Emerald ... Poison / Nature ? 🌱
+- Diamond ... Arcane / 🔮
 
-Iron - Take less damage
-Gold - Speed ⬆️
-Platinum - DPS up ?
+- Iron - Take less damage
+- Gold - Speed ⬆️
+- Platinum - DPS up ?
 
-Glass Toucan - Damage or crit?
-Wooden Frog ⬇️ Lower "parry / shield" CDR
-Plastic
+- Glass Toucan - Damage or crit?
+- Wooden Frog ⬇️ Lower "parry / shield" CDR
+- Plastic
