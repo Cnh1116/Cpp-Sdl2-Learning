@@ -1,11 +1,13 @@
 #include <iostream>
-#include "SDLWindow.hpp"
-#include <unistd.h> // For sleep
+#include "game.hpp"
+
+//#include <unistd.h> // For sleep
 
 int main()
 {
-	SDLWindow window("SANC", 1080, 1920);
-
-	window.run();
+	
+	Game my_game;
+	my_game.RunGame();
+	
 	return 0;
 }

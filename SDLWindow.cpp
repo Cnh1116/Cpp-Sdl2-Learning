@@ -17,6 +17,13 @@ SDLWindow::~SDLWindow()
     cleanup();
 }
 
+void SDLWindow::HideWindow()
+{
+    std::cout << "[*] HideWindow() Called";
+    SDL_HideWindow(window);
+    isRunning = false;
+}
+
 // Initialize SDL, create window and renderer
 bool SDLWindow::init(const char* title, int width, int height) 
 {
@@ -47,6 +54,7 @@ bool SDLWindow::init(const char* title, int width, int height)
     return true;
 }
 
+
 // Handle input events
 void SDLWindow::handleEvents() 
 {
@@ -61,7 +69,14 @@ void SDLWindow::handleEvents()
         {
             if (event.key.keysym.sym == SDLK_ESCAPE)
             {
+                std::cout << "[*] Esc Key Pressed. Window object set to isRunning = False\n";
                 isRunning = false;
+            }
+
+            if (event.key.keysym.sym == SDLK_BACKQUOTE)
+            {
+                std::cout << "[*] ` Key Pressed. Window object set to.\n";
+               
             }
         }
     }

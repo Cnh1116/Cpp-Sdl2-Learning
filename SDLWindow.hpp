@@ -8,6 +8,11 @@ public:
     // Destructor
     ~SDLWindow();
 
+    //Hide Window 
+    void HideWindow();
+
+    //Show Window
+
     // Main loop
     void run();
 
