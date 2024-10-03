@@ -15,9 +15,21 @@ void Game::RunGame()
         game_window->run();
         debug_window->run();
 
-        if (event.key.keysym.sym == SDLK_BACKQUOTE)
+        if (event.type == SDL_KEYDOWN)
+        {
+            if (event.key.keysym.sym == SDLK_ESCAPE)
+            {
+                std::cout << "[*] Esc Key Pressed. Window object set to isRunning = False\n";
+                game_window->cleanup();
+                debug_window->cleanup();
+            }
+            
+            if (event.key.keysym.sym == SDLK_BACKQUOTE)
             {
                 std::cout << "[*] ` Key Pressed. Window object set to.\n";
             }
+        }
+        
+     
     }
 }

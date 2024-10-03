@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 
-class SDLWindow {
+class SDLWindow 
+{
 public:
     // Constructor
     SDLWindow(const char* title, int width, int height);
@@ -12,6 +13,10 @@ public:
     void HideWindow();
 
     //Show Window
+
+    // Clean up and quit SDL
+    void cleanup();
+
 
     // Main loop
     void run();
@@ -33,6 +38,5 @@ private:
     // Render content
     void render();
 
-    // Clean up and quit SDL
-    void cleanup();
+    
 };
