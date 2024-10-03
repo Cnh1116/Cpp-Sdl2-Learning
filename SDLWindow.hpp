@@ -12,31 +12,34 @@ public:
     //Hide Window 
     void HideWindow();
 
+    void ShowWindow();
+
     //Show Window
 
     // Clean up and quit SDL
     void cleanup();
 
+    void DeactivateWindow();
 
-    // Main loop
-    void run();
+
+    // Render content
+    void render();
 
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
-    bool isRunning;
+    bool is_shown;
 
     // Initialize SDL, create window and renderer
     bool init(const char* title, int width, int height);
 
     // Handle input events
-    void handleEvents();
+    //void handleEvents();
 
     // Update game logic
     void update();
 
-    // Render content
-    void render();
+    
 
     
 };

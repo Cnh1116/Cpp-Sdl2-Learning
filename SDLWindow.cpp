@@ -3,11 +3,11 @@
 
 // Constructor
 SDLWindow::SDLWindow(const char* title, int width, int height)
-    : window(nullptr), renderer(nullptr), isRunning(false) 
+    : window(nullptr), renderer(nullptr), is_shown(false) 
 {
     if (init(title, width, height)) 
     {
-        isRunning = true;
+        is_shown = true;
     }
 }
 
@@ -20,8 +20,20 @@ SDLWindow::~SDLWindow()
 void SDLWindow::HideWindow()
 {
     std::cout << "[*] HideWindow() Called";
-    SDL_HideWindow(window);
-    isRunning = false;
+    is_shown = false;
+    SDL_HideWindow(window);  
+}
+
+void SDLWindow::ShowWindow()
+{
+    std::cout << "[*] ShowWindow() Called";
+    is_shown = true;
+    SDL_ShowWindow(window);
+}
+
+void SDLWindow::DeactivateWindow()
+{
+    is_shown = false;
 }
 
 // Initialize SDL, create window and renderer
@@ -29,7 +41,7 @@ bool SDLWindow::init(const char* title, int width, int height)
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) 
     {
-        std::cerr << "SDL Init Error: " << SDL_GetError() << std::endl;
+        std::cerr << "[!] SDL Init Error: " << SDL_GetError() << std::endl;
         return false;
     }
 
@@ -55,12 +67,11 @@ bool SDLWindow::init(const char* title, int width, int height)
 }
 
 
-// Handle input events
+/*// Handle input events
 void SDLWindow::handleEvents() 
 {
     SDL_Event event;
-    while (SDL_PollEvent(&event)) 
-    {
+    while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) 
         {
             isRunning = false;
@@ -73,15 +84,9 @@ void SDLWindow::handleEvents()
                 std::cout << "[*] Esc Key Pressed. Window object set to isRunning = False\n";
                 isRunning = false;
             }
-
-            if (event.key.keysym.sym == SDLK_BACKQUOTE)
-            {
-                std::cout << "[*] ` Key Pressed. Window object set to.\n";
-               
-            }
         }
     }
-}
+}*/
 
 // Update game logic
 void SDLWindow::update() 
@@ -102,18 +107,8 @@ void SDLWindow::render() {
 // Clean up and quit SDL
 void SDLWindow::cleanup() 
 {
+    std::cout << "[*] Cleaning up window.";
+
     if (renderer) { SDL_DestroyRenderer(renderer); }
     if (window) { SDL_DestroyWindow(window); }
-    SDL_Quit();
-}
-
-// Main loop
-void SDLWindow::run() 
-{
-    while (isRunning) 
-    {
-        handleEvents();
-        update();
-        render();
-    }
 }
