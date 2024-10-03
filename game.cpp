@@ -10,10 +10,14 @@ Game::Game()
 void Game::RunGame()
 {
     SDL_Event event;
-    SDL_PollEvent(&event);
+    while (SDL_PollEvent(&event)) 
+    {
+        game_window->run();
+        debug_window->run();
 
-    if (event.key.keysym.sym == SDLK_BACKQUOTE)
-        {
-            std::cout << "[*] ` Key Pressed. Window object set to.\n";
-        }
+        if (event.key.keysym.sym == SDLK_BACKQUOTE)
+            {
+                std::cout << "[*] ` Key Pressed. Window object set to.\n";
+            }
+    }
 }

@@ -59,7 +59,8 @@ bool SDLWindow::init(const char* title, int width, int height)
 void SDLWindow::handleEvents() 
 {
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event)) 
+    {
         if (event.type == SDL_QUIT) 
         {
             isRunning = false;
