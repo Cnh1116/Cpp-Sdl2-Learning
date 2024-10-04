@@ -107,7 +107,7 @@ void SDLWindow::render() {
 // Clean up and quit SDL
 void SDLWindow::cleanup() 
 {
-    std::cout << "[*] Cleaning up window.";
+    std::cout << "[*] Cleaning up window.\n";
 
     if (renderer) { SDL_DestroyRenderer(renderer); }
     if (window) { SDL_DestroyWindow(window); }

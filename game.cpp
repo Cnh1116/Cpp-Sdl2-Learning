@@ -38,7 +38,7 @@ void Game::HandleKeyInput(SDL_Event event)
                 {
                     case SDLK_ESCAPE: // ESC
                     {
-                        std::cout << "[*] Esc Key Pressed. Window object set to isRunning = False\n";
+                        std::cout << "[*] Esc Key Pressed. game_over = True\n";
                         game_over = true;
                         game_window->DeactivateWindow();
                         game_window->cleanup();
@@ -55,17 +55,17 @@ void Game::HandleKeyInput(SDL_Event event)
 
                     case SDLK_TAB: // TAB
                     {
-                        std::cout << "[*] TAB Key Pressed. Fading Music Out, then playing it again.";
+                        std::cout << "[*] TAB Key Pressed.\n";
                         break;
                     }
 
                     case SDLK_x: // TAB
                     {
-                        std::cout << "[*] X Key Pressed. Incrementing variable.";
+                        std::cout << "[*] X Key Pressed. Incrementing variable.\n";
                         times_X_pressed++;
                         if ( 9 == ( times_X_pressed % 10 ) )
                         {
-                            std::cout << "[*] X%10 == 9. Fading Music out and replaying.";
+                            std::cout << "[*] X%10 == 9. Fading Music out and replaying.\n";
                             sound_manager->FadeOutMusic();
                             sound_manager->PlayMusic(sound_manager->song_1);
                         }
@@ -73,7 +73,7 @@ void Game::HandleKeyInput(SDL_Event event)
                     }
 
                     default:
-                        std::cout << "[*] Key pressed that is not in the RunGame switch statement.";
+                        std::cout << "[*] Key pressed that is not in the RunGame switch statement.\n";
                         break;
                 } 
             }
