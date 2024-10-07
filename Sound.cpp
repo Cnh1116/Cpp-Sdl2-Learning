@@ -1,26 +1,26 @@
-#include "sound.hpp"
+#include "Sound.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
 SoundManager::SoundManager()
 {
-    std::cout << "[*] Initializing Audio.";
+    std::cout << "[*] Initializing Audio.\n";
     if (0 != SDL_Init(SDL_INIT_AUDIO))
     {
-        std::cout << "[!] SDL_Init Audio did not return 0 code." << SDL_GetError() << std::endl;
+        std::cout << "[!] SDL_Init Audio did not return 0 code.\n" << SDL_GetError() << std::endl;
         exit(1);
     }
 
     if(0 > Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096))
     {
-        std::cout << "[!] Mix_OpenAudio did not return 0 code." << Mix_GetError() << std::endl;
+        std::cout << "[!] Mix_OpenAudio did not return 0 code.\n" << Mix_GetError() << std::endl;
         exit(1);
     }
 }
 
 SoundManager::~SoundManager()
 {
-    std::cout << "[*] Turning off the SDL Audio.";
+    std::cout << "[*] Turning off the SDL Audio.\n";
     Mix_CloseAudio();
 }
 

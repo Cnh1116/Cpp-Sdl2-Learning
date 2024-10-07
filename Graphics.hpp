@@ -1,15 +1,17 @@
 #include <SDL2/SDL.h>
 #include "Player.hpp"
 #include <SDL2/SDL_image.h>
+#include "Projectiles.hpp"
+#include <vector>
 
-class SDLWindow 
+class Graphics 
 {
 public:
     // Constructor
-    SDLWindow(const char* title, int width, int height, int pixel_scale);
+    Graphics(const char* title, int width, int height, int pixel_scale);
 
     // Destructor
-    ~SDLWindow();
+    ~Graphics();
 
     //Hide Window 
     void HideWindow();
@@ -26,7 +28,7 @@ public:
     SDL_Texture* GetTexture(const char* png_path);
 
     // Render content
-    void render(Player* player);
+    void render(Player* player, std::vector<Projectile*> &game_projectile);
 
     SDL_Renderer* GetRenderer();
 

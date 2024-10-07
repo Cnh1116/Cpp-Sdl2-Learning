@@ -1,5 +1,6 @@
 #include <iostream>
-#include "game.hpp"
+#include "Game.hpp"
+
 
 //#include <unistd.h> // For sleep
 

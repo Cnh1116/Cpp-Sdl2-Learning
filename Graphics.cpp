@@ -1,8 +1,10 @@
-#include "SDLWindow.hpp"
+#include "Graphics.hpp"
 #include <iostream>
+#include <vector>
+#include "Projectiles.hpp"
 
 // Constructor
-SDLWindow::SDLWindow(const char* title, int width, int height, int scale)
+Graphics::Graphics(const char* title, int width, int height, int scale)
     : window(nullptr), renderer(nullptr), is_shown(false) 
 {
     
@@ -17,32 +19,32 @@ SDLWindow::SDLWindow(const char* title, int width, int height, int scale)
 }
 
 // Destructor
-SDLWindow::~SDLWindow() 
+Graphics::~Graphics() 
 {
     cleanup();
 }
 
-void SDLWindow::HideWindow()
+void Graphics::HideWindow()
 {
     std::cout << "[*] HideWindow() Called";
     is_shown = false;
     SDL_HideWindow(window);  
 }
 
-void SDLWindow::ShowWindow()
+void Graphics::ShowWindow()
 {
     std::cout << "[*] ShowWindow() Called";
     is_shown = true;
     SDL_ShowWindow(window);
 }
 
-void SDLWindow::DeactivateWindow()
+void Graphics::DeactivateWindow()
 {
     is_shown = false;
 }
 
 // Initialize SDL, create window and renderer
-bool SDLWindow::init(const char* title, int width, int height) 
+bool Graphics::init(const char* title, int width, int height) 
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) 
     {
@@ -72,7 +74,7 @@ bool SDLWindow::init(const char* title, int width, int height)
 }
 
 
-SDL_Texture* SDLWindow::GetTexture(const char* png_path)
+SDL_Texture* Graphics::GetTexture(const char* png_path)
 {
     SDL_Surface* temp_surface = IMG_Load(png_path);
     SDL_Texture* retreived_texture = SDL_CreateTextureFromSurface(renderer, temp_surface);
@@ -87,7 +89,7 @@ SDL_Texture* SDLWindow::GetTexture(const char* png_path)
 }
 
 // Render content
-void SDLWindow::render(Player* player) {
+void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles) {
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
     SDL_RenderClear(renderer);
@@ -100,40 +102,65 @@ void SDLWindow::render(Player* player) {
 
     // Render Background
 
-    // Render Player
-    int x = player->GetDstRect()->x;
-    int y = player->GetDstRect()->y;
-    int w = player->GetDstRect()->w * pixel_scale;
-    int h = player->GetDstRect()->h * pixel_scale;
+    
+    // Render Enemies from enemy vector
 
-    if ( 0 != SDL_RenderCopy(renderer, player->GetTexture(), NULL, new SDL_Rect {x, y, w, h}))
+    // Render Items from item vector
+
+    // For Projectile in game_projectiles list, if their dest rect is withing the bounds of the screen, render it
+    for (int i = 0; i < game_projectiles.size(); i++)
+    {  
+        // Update position with boundary checks.
+        if (game_projectiles.at(i)->GetDstRect()->x >= 0 && 
+        game_projectiles.at(i)->GetDstRect()->x  <= screen_width - game_projectiles.at(i)->GetDstRect()->w &&
+        game_projectiles.at(i)->GetDstRect()->y >= 0 && 
+        game_projectiles.at(i)->GetDstRect()->y  <= screen_height - game_projectiles.at(i)->GetDstRect()->h) 
+        {
+            if ( 0 != SDL_RenderCopy(renderer, game_projectiles.at(i)->GetTexture(), NULL, game_projectiles.at(i)->GetDstRect())) //Second arg NULL means use whole png.
+                {
+                    std::cout << "[!] Proj failed to render.\n";
+                }
+        }
+        else
+        {
+            //std::cout << "[*] Need to get rid of this proj\n";
+            game_projectiles.erase(game_projectiles.begin() + i);
+        }
+        
+    }
+
+    // Render Player
+    if ( 0 != SDL_RenderCopy(renderer, player->GetTexture(), NULL, player->GetDstRect())) //Second arg NULL means use whole png.
     {
         std::cout << "[!] Player failed to render.\n";
     }
-    // Render Enemies from enemy vector
-    // Render Items from item vector
-    // Render Projectiles from Projectile Vector ?
+
+    if ( 0 != SDL_RenderCopy(renderer, player->GetSecondaryFireTexture(), NULL, player->GetSecondaryFirePosition())) //Second arg NULL means use whole png.
+    {
+        std::cout << "[!] Secondary Fire HUD failed to render.\n";
+    }
+
 
     SDL_RenderPresent(renderer);
 }
 
-int SDLWindow::GetScreenWidth()
+int Graphics::GetScreenWidth()
 {
     return screen_width;
 }
 
-int SDLWindow::GetScreenHeight()
+int Graphics::GetScreenHeight()
 {
     return screen_height;
 }
 
-SDL_Renderer* SDLWindow::GetRenderer()
+SDL_Renderer* Graphics::GetRenderer()
 {
     return renderer;
 }
 
 // Clean up and quit SDL
-void SDLWindow::cleanup() 
+void Graphics::cleanup() 
 {
     std::cout << "[*] Cleaning up window.\n";
 

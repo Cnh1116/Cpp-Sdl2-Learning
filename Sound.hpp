@@ -10,6 +10,7 @@ class SoundManager
         void FadeOutMusic();
 
         const char* sound_1 = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sounds/mixkit-glass-hitting-a-metal-2183.wav";
+        const char* sound_2 = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sounds/mixkit-video-game-retro-click-237.wav";
         const char* song_1 = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/music/ChrisChristodoulou-TheyMightAsWellBeDeadROR2_SurvivorsoftheVoid(2022).mp3";
 
         
