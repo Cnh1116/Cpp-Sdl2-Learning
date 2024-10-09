@@ -72,7 +72,7 @@ void Player::SetPosition(int x, int y, int SCREEN_WIDTH, int SCREEN_HEIGHT)
     if (player_dest_rect.y + y >= 0 && player_dest_rect.y + y <= SCREEN_HEIGHT - player_dest_rect.h) 
     {
         player_dest_rect.y += y ;  // Move along y-axis within bounds
-        secondary_fire.secondary_fire_dest_rect.y = player_dest_rect.y - 256;
+        secondary_fire.secondary_fire_dest_rect.y = player_dest_rect.y - (256 + 64);
     }
 
 }

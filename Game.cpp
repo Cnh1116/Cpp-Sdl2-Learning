@@ -83,14 +83,14 @@ void Game::RunGame()
             }
         }
 
-        if (keystates[SDL_SCANCODE_K]) // K //
+        if (keystates[SDL_SCANCODE_UP]) // UP ARROW //
         {
             
             if(player.IsFirePrimaryReady())
             {
                 game_projectiles.push_back(new PrimaryFire(player.GetDstRect()->x, player.GetDstRect()->y, 10.0, graphics_manager->GetTexture("assets/sprites/primary_fire.png"), player.GetBaseDamage(), PIXEL_SCALE));
                 sound_manager->PlaySound(sound_manager->sound_1);
-                std::cout << "[*] K  Pressed. \n";
+                std::cout << "[*] UP Pressed. \n";
             }
         }
 

@@ -113,8 +113,8 @@ void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles
         // Update position with boundary checks.
         if (game_projectiles.at(i)->GetDstRect()->x >= 0 && 
         game_projectiles.at(i)->GetDstRect()->x  <= screen_width - game_projectiles.at(i)->GetDstRect()->w &&
-        game_projectiles.at(i)->GetDstRect()->y >= 0 && 
-        game_projectiles.at(i)->GetDstRect()->y  <= screen_height - game_projectiles.at(i)->GetDstRect()->h) 
+        game_projectiles.at(i)->GetDstRect()->y + game_projectiles.at(i)->GetDstRect()->h >= 0 && 
+        game_projectiles.at(i)->GetDstRect()->y  <= screen_height) 
         {
             if ( 0 != SDL_RenderCopy(renderer, game_projectiles.at(i)->GetTexture(), NULL, game_projectiles.at(i)->GetDstRect())) //Second arg NULL means use whole png.
                 {
