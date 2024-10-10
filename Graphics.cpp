@@ -5,12 +5,13 @@
 
 // Constructor
 Graphics::Graphics(const char* title, int width, int height, int scale)
-    : window(nullptr), renderer(nullptr), is_shown(false) 
+    : window(nullptr), renderer(nullptr), is_shown(false) , clouds1_animation_index(0)
 {
     
     screen_width = width;
     screen_height = height;
     pixel_scale = scale;
+    clouds1_dest = {0, 0, 576, 324};
     
     if (init(title, width, height)) 
     {
@@ -80,7 +81,7 @@ SDL_Texture* Graphics::GetTexture(const char* png_path)
     SDL_Texture* retreived_texture = SDL_CreateTextureFromSurface(renderer, temp_surface);
     if (NULL == retreived_texture)
     {
-        std::cout << "[!] Failed to load player's texture.";
+        std::cout << "[!] Failed to load texture" << png_path << std::endl;;
         exit(1);
     }
     SDL_FreeSurface(temp_surface);
@@ -101,6 +102,16 @@ void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles
 
 
     // Render Background
+    if ( 0 != SDL_RenderCopy(renderer, GetTexture(background_png), NULL, NULL) ) //Second arg NULL means use whole png.
+    {
+        std::cout << "[!] Background failed to render.\n";
+    }
+
+    // Render Background Clouds
+    if ( 0 != SDL_RenderCopy(renderer, GetTexture(clouds1_png), NULL, &clouds1_dest) ) //Second arg NULL means use whole png.
+    {
+        std::cout << "[!] Background failed to render.\n";
+    }
 
     
     // Render Enemies from enemy vector
@@ -140,6 +151,11 @@ void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles
         std::cout << "[!] Secondary Fire HUD failed to render.\n";
     }
 
+    if (player->IsSecondaryFireMarkerActive())
+    {
+        SDL_RenderCopy(renderer, player->GetSecondaryFireMarkerTexture(), NULL, player->GetSecondaryFireMarkerPosition());
+    }
+
 
     SDL_RenderPresent(renderer);
 }
@@ -152,6 +168,23 @@ int Graphics::GetScreenWidth()
 int Graphics::GetScreenHeight()
 {
     return screen_height;
+}
+
+void Graphics::BackgroundUpdate(Uint32 loop)
+{
+    if (clouds1_dest.x >= screen_width || clouds1_dest.y >= (screen_height + 256 )) 
+    { 
+        clouds1_dest.x = 0; //INSTEAD OF ALWAYS AT ORIGIN, RANDOMIZE 
+        clouds1_dest.y = 0;
+    }
+    
+    if (loop % 4 == 0)
+    {
+        clouds1_dest.x += 1;
+        clouds1_dest.y += 2;
+    }
+
+    clouds1_animation_index++;
 }
 
 SDL_Renderer* Graphics::GetRenderer()

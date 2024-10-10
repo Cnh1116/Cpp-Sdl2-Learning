@@ -13,7 +13,7 @@ Game::Game() // Game constructor acts as my INIT function for the game.
       sound_manager(new SoundManager()),
       game_over(false),
       times_X_pressed(0),
-      player(Player(graphics_manager->GetTexture("assets/sprites/player.png"), graphics_manager->GetTexture("assets/sprites/secondary_fire_hud.png"), PIXEL_SCALE))
+      player(Player(graphics_manager, PIXEL_SCALE))
 {
     // Load Player Sprite
     player.SetPosition( (WINDOW_WIDTH/2) - (player.GetDstRect()->w / 2), WINDOW_HEIGHT - (player.GetDstRect()->h), WINDOW_WIDTH, WINDOW_HEIGHT );
@@ -29,16 +29,17 @@ void Game::RunGame()
 {
 
     // Game LOOP Specific Pieces
-    int loop = 0;
+    u_long loop = 0;
     std::vector<Projectile*> game_projectiles;
 
     
     while(false == game_over)
     {
-        // Get Frame Start Time
         Uint32 current_tick = SDL_GetTicks();
         
-        // Handle Events
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ~  HANDLE Discrete EVENTS    ~
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
         SDL_Event event;
         while (SDL_PollEvent(&event)) 
         {
@@ -46,14 +47,10 @@ void Game::RunGame()
             HandleKeyInput(event, &player, game_projectiles);
         }
 
-        // UPDATE NEEDS TO BE A METHOD
-        for (Projectile* proj : game_projectiles)
-        {
-            proj->MoveProjectile();
-        }
-
-        // Update player position based on key states
-        const Uint8* keystates = SDL_GetKeyboardState(NULL);
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ~  HANDLE Continous EVENTS    ~
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        const Uint8* keystates = SDL_GetKeyboardState(NULL); //IF DIAGNAOL MOVEMENT NEED TO NORMALIZE THE DISTANCE, DIAGNAL MOVES FASTER!!!!!!!!!!!!!!!!!!!
         float dx = 0, dy = 0;
         if (keystates[SDL_SCANCODE_W])
         {
@@ -72,12 +69,22 @@ void Game::RunGame()
             dx = 1;
         }
 
+        // If we are moving diagnal, we need to normalize the movement
+        if (dx != 0 && dy != 0)
+        {
+            float length = sqrt(dx * dx + dy * dy);
+            dx /= length;
+            dy /= length;
+        }
+
         if (keystates[SDL_SCANCODE_SPACE]) // SPACE //
         {
             
             if(player.IsFireSecondaryReady())
             {
-                game_projectiles.push_back(new SecondaryFire(player.GetDstRect()->x, player.GetDstRect()->y,  2, graphics_manager->GetTexture("assets/sprites/secondary_fire_projectile.png"), PIXEL_SCALE));
+                player.SetSecondaryFireMarkerActive(true);
+                player.SetSecondaryFireMarkerPosition();
+                game_projectiles.push_back(new SecondaryFire(player.GetDstRect()->x, player.GetDstRect()->y,  player.GetSecondaryFireSpeed(), graphics_manager, PIXEL_SCALE));
                 sound_manager->PlaySound(sound_manager->sound_2);
                 std::cout << "[*] SPACE CLICK  Pressed. \n";
             }
@@ -88,33 +95,40 @@ void Game::RunGame()
             
             if(player.IsFirePrimaryReady())
             {
-                game_projectiles.push_back(new PrimaryFire(player.GetDstRect()->x, player.GetDstRect()->y, 10.0, graphics_manager->GetTexture("assets/sprites/primary_fire.png"), player.GetBaseDamage(), PIXEL_SCALE));
+                game_projectiles.push_back(new PrimaryFire(player.GetDstRect()->x, player.GetDstRect()->y, 10.0, graphics_manager, player.GetBaseDamage(), PIXEL_SCALE));
                 sound_manager->PlaySound(sound_manager->sound_1);
                 std::cout << "[*] UP Pressed. \n";
             }
         }
 
-        
-        
-        player.SetPosition(dx * player.GetSpeed(), dy * player.GetSpeed(), WINDOW_WIDTH, WINDOW_HEIGHT);
-        
-        
+        /*~~~~~~~~~~~~~~~~~~~~~~~~
+        ~  HANDLE COLLISIONS     ~
+        ~~~~~~~~~~~~~~~~~~~~~~~~*/
+        HandleCollisions(&player, game_projectiles);
 
-        // Render 
-         graphics_manager->render(&player, game_projectiles);
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ~  UPDATE Players, Projectiles and Enemies     ~
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        graphics_manager->BackgroundUpdate(loop);
+        player.Update(dx * player.GetSpeed(), dy * player.GetSpeed(), WINDOW_WIDTH, WINDOW_HEIGHT, loop);
 
-        //FPS Control
-        //if( (1000.0/MAX_FPS) > (SDL_GetTicks() - loop_start_time) )
-        //{
-        //    SDL_Delay(  (1000.0/MAX_FPS) > (SDL_GetTicks() - loop_start_time) );
-        //}
-
-        // FPS Control Logic
-        Uint32 frame_time = SDL_GetTicks() - current_tick;
-        if ( (frame_time - current_tick) < ( 1000.0 / MAX_FPS ) )
+        for (Projectile* proj : game_projectiles)
         {
-            SDL_Delay( (1000.0 / MAX_FPS ) - frame_time);
+            proj->MoveProjectile(); //proj->update() which calles movePRojectile and should ++animation sprite
         }
+        
+
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ~  RENDER Player, Projectiles and Enemies     ~
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        graphics_manager->render(&player, game_projectiles);
+
+
+        /*~~~~~~~~~~~~~~~~~~~~~~~~
+        ~  FPS Control Logic     ~
+        ~~~~~~~~~~~~~~~~~~~~~~~~*/
+        FPSLogic(current_tick);
+
 
         loop++;
     }
@@ -158,6 +172,49 @@ void Game::HandleKeyInput(SDL_Event event, Player* player, std::vector<Projectil
                 sound_manager->PlayMusic(sound_manager->song_1);
             }
         }
+}
 
+void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_projectiles)
+{
+    
+    // CHECKING COLLISIONS FOR DIFF PROJECTILES
+    for (int i = 0; i < game_projectiles.size(); i++)
+    {  
+        if ( dynamic_cast<SecondaryFire*>( game_projectiles.at(i) ) )
+        {
+            std::cout << "[*] I see a secondary fire projectile in here !\n";
+            if (RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetSecondaryFireMarkerCollision()))
+            {
+                player->SetSecondaryFireMarkerActive(false);
+                game_projectiles.erase(game_projectiles.begin() + i);
+                
+            }
+        }
+    }
+}
 
+bool Game::RectRectCollision(SDL_Rect* rect_1, SDL_Rect* rect_2)
+{
+    return (rect_1->x < rect_2->x + rect_2->w &&
+            rect_1->x + rect_1->w > rect_2->x &&
+            rect_1->y < rect_2->y + rect_2->h &&
+            rect_1->y + rect_1->h > rect_2->y);
+}
+
+bool Game::RectCircleCollision(SDL_Rect* rect_1, int circle_x, int circle_y, int circle_r)
+{
+    return true;
+}
+bool Game::CircleCircleCollision(int circle1_x, int circle1_y, int circle1_r, int circle2_x, int circle2_y, int circle2_r)
+{
+    return true;
+}
+
+void Game::FPSLogic(Uint32 current_tick)
+{
+    Uint32 frame_time = SDL_GetTicks() - current_tick;
+    if ( (frame_time - current_tick) < ( 1000.0 / MAX_FPS ) )
+    {
+        SDL_Delay( (1000.0 / MAX_FPS ) - frame_time);
+    }
 }

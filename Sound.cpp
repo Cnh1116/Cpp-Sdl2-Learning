@@ -30,7 +30,7 @@ void SoundManager::PlaySound(const char* wav_file_path)
     if (1 == Mix_Playing(-1))
     {
         std::cout << "[*] A sound is already playing, doing nothing.";
-        return;
+        //return;
     }
     
     // Load a WAV sound effect
@@ -38,6 +38,7 @@ void SoundManager::PlaySound(const char* wav_file_path)
     if (!soundEffect) 
     {
         std::cerr << "[!] Failed to load WAV file: " << Mix_GetError() << std::endl;
+        return;
     }
 
     std::cout << "[*] Playing Sound Effect" << wav_file_path << std::endl;

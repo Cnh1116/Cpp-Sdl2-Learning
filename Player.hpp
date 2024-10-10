@@ -4,21 +4,26 @@
 
 #include <SDL2/SDL.h>
 
+class Graphics;
+
 
 class Player
 {
     public:
         
         // Constructor
-        Player(SDL_Texture* player_texture, SDL_Texture* secondary_fire_crosshair, int PIXREL_SCALE);
+        Player(Graphics* graphics_manager, int PIXEL_SCALE);
 
         // Actions
         // void FirePrimary();
         bool IsFirePrimaryReady();
         bool IsFireSecondaryReady();
-        
         // void UseShield();
 
+        //UPDATE
+        void Update(int x_pos, int y_pos, int SCREEN_WIDTH, int SCREEN_HEIGHT, u_long loop);
+
+       
         
         // Setters and Getters
         SDL_Rect* GetSrcRect();
@@ -29,32 +34,77 @@ class Player
         void SetImageScale(int image_scale);
         int GetSpeed();
         void SetSpeed(float speed);
+
+        //Secondary_Fire GetSecondaryFire();
+        
         SDL_Texture* GetSecondaryFireTexture();
+        
         SDL_Rect* GetSecondaryFirePosition();\
+        float GetSecondaryFireSpeed();
+        
+        // SECON FIRE MARKER
+        void SetSecondaryFireMarkerDest();
+        SDL_Texture* GetSecondaryFireMarkerTexture();
+        bool IsSecondaryFireMarkerActive();
+        void SetSecondaryFireMarkerActive(bool flag);
+        void SetSecondaryFireMarkerPosition();
+        SDL_Rect* GetSecondaryFireMarkerCollision();
+        SDL_Rect* GetSecondaryFireMarkerPosition();
+
         float GetBaseDamage();
        
 
     
     private:
+        //STATS
+        float player_speed;
+        float base_damage;
+        
+        int BASE_SPRITE_SIZE = 32;
+        int image_scale;
+        const char* player_sprite_png = "assets/sprites/player.png";
+        int idle_animation_index;
+
         SDL_Texture* player_texture;
         SDL_Rect player_source_rect;
         SDL_Rect player_dest_rect;
-        float player_speed;
-        float base_damage;
-        int BASE_SPRITE_SIZE = 32;
         
-        Uint32 last_secondary_fire_time = 0;
-        Uint32 last_primary_fire_time = 0;
-        Uint32 secondary_fire_cdr = 1000; //ms
-        Uint32 primary_fire_cdr = 120; //ms
+        
+
+        struct Primary_fire
+        {
+            Uint32 last_fire_time = 0;
+            Uint32 cooldown_time_ms = 120; //ms
+            // const char* png sprite sheet
+            // vector<sdl_rect>
+            //const char* .wav effect
+        };
+        Primary_fire primary_fire;
 
         struct Secondary_fire
         {
-            SDL_Rect secondary_fire_source_rect;
-            SDL_Rect secondary_fire_dest_rect;
-            SDL_Texture* secondary_fire_crosshair;
-        };
+            // MARKER VARIABLES
+            bool marker_active;
+            SDL_Rect marker_col_rect;
+            SDL_Rect marker_dest_rect;
+            SDL_Texture* marker;
+            const char* marker_png = "assets/sprites/secondary_fire_marker.png";
 
+            //HUD VARIABLES
+            SDL_Rect source_rect;
+            SDL_Rect hud_dest_rect;
+            SDL_Texture* crosshair;
+            const char* hud_png = "assets/sprites/secondary_fire_hud.png";
+            
+            // STATS
+            Uint32 last_fire_time = 0;
+            Uint32 cooldown_time_ms = 1500; //ms
+            float speed = 4.5;
+            
+            
+            // vector<sdl_rect>
+            //const char* .wav effect
+        };
         Secondary_fire secondary_fire;
 };
 
