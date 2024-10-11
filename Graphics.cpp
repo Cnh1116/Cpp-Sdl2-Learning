@@ -11,7 +11,7 @@ Graphics::Graphics(const char* title, int width, int height, int scale)
     screen_width = width;
     screen_height = height;
     pixel_scale = scale;
-    clouds1_dest = {0, 0, 576, 324};
+    clouds1_dest = {0, 0, 576 * 4, 324 * 4}; //FILE SIZE * arbitrary scale factor
     
     if (init(title, width, height)) 
     {

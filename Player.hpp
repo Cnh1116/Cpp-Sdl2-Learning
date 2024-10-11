@@ -60,9 +60,10 @@ class Player
         float player_speed;
         float base_damage;
         
+        //IMAGE STUFF
         int BASE_SPRITE_SIZE = 32;
         int image_scale;
-        const char* player_sprite_png = "assets/sprites/player.png";
+        const char* player_sprite_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/player-sprites/player.png";
         int idle_animation_index;
 
         SDL_Texture* player_texture;
@@ -88,13 +89,13 @@ class Player
             SDL_Rect marker_col_rect;
             SDL_Rect marker_dest_rect;
             SDL_Texture* marker;
-            const char* marker_png = "assets/sprites/secondary_fire_marker.png";
+            const char* marker_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/player-sprites/secondary_fire_marker.png";
 
             //HUD VARIABLES
             SDL_Rect source_rect;
             SDL_Rect hud_dest_rect;
             SDL_Texture* crosshair;
-            const char* hud_png = "assets/sprites/secondary_fire_hud.png";
+            const char* hud_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/player-sprites/secondary_fire_hud.png";
             
             // STATS
             Uint32 last_fire_time = 0;
@@ -106,6 +107,11 @@ class Player
             //const char* .wav effect
         };
         Secondary_fire secondary_fire;
+
+        //ITEMS
+        //glass_toucans;
+        //wooden_owls
+        //
 };
 
 #endif

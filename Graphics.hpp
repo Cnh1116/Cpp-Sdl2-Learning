@@ -49,8 +49,8 @@ private:
     SDL_Renderer* renderer;
 
     // Background Stuff
-    const char* background_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/free-sky-with-clouds-background-pixel-art-set/Clouds/Clouds 5/1.png";
-    const char* clouds1_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/free-sky-with-clouds-background-pixel-art-set/Clouds/Clouds 5/3.png";
+    const char* background_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/background-sprites/1.png";
+    const char* clouds1_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/background-sprites/3.png";
     SDL_Rect clouds1_src, clouds1_dest;
     int clouds1_animation_index;
 

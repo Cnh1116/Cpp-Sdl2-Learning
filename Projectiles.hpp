@@ -32,14 +32,14 @@ class PrimaryFire : public Projectile {
 public:
     PrimaryFire(int x, int y, float projectile_speed, Graphics* graphics_manager, float projectile_damage, int PIXEL_SCALE);
     void MoveProjectile() override;
-    const char* projectile_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/primary_fire.png";
+    const char* projectile_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/projectile-sprites/primary_fire.png";
 };
 
 class SecondaryFire : public Projectile {
 public:
     SecondaryFire(int x, int y, float projectile_speed, Graphics* graphics_manager, int PIXEL_SCALE);
     void MoveProjectile() override;
-    const char* projectile_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/secondary_fire_projectile.png";
+    const char* projectile_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/projectile-sprites/secondary_fire_projectile.png";
     
     
     //void UPDATE(): Calls moveprojectile function and increments the frame to play of an animation
