@@ -13,6 +13,7 @@ Game::Game() // Game constructor acts as my INIT function for the game.
       sound_manager(new SoundManager()),
       game_over(false),
       times_X_pressed(0),
+      item_manager(new ItemManager(graphics_manager)),
       player(Player(graphics_manager, PIXEL_SCALE))
 {
     // Load Player Sprite
@@ -85,6 +86,16 @@ void Game::RunGame()
                 player.SetSecondaryFireMarkerActive(true);
                 player.SetSecondaryFireMarkerPosition();
                 game_projectiles.push_back(new SecondaryFire(player.GetDstRect()->x, player.GetDstRect()->y,  player.GetSecondaryFireSpeed(), graphics_manager, PIXEL_SCALE));
+
+                for(int i = 0; i < item_manager->GetItemList()->size(); i++)
+                {
+                    if (RectRectCollision(player.GetSecondaryFireMarkerPosition(), &item_manager->GetItemList()->at(i).item_coll_rect))
+                    {
+                        std::cout << "[*] Player shot an item!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+                        sound_manager->PlaySound("/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sounds/mixkit-unlock-new-item-game-notification-254.wav");
+                    }
+                }
+
                 sound_manager->PlaySound(sound_manager->sound_2);
                 std::cout << "[*] SPACE CLICK  Pressed. \n";
             }
@@ -110,18 +121,21 @@ void Game::RunGame()
         ~  UPDATE Players, Projectiles and Enemies     ~
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
         graphics_manager->BackgroundUpdate(loop);
+
         player.Update(dx * player.GetSpeed(), dy * player.GetSpeed(), WINDOW_WIDTH, WINDOW_HEIGHT, loop);
 
         for (Projectile* proj : game_projectiles)
         {
             proj->MoveProjectile(); //proj->update() which calles movePRojectile and should ++animation sprite
         }
+
+        item_manager->UpdateItemList();
         
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~  RENDER Player, Projectiles and Enemies     ~
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        graphics_manager->render(&player, game_projectiles);
+        graphics_manager->render(&player, game_projectiles, item_manager->GetItemList());
 
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +196,7 @@ void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_proje
     {  
         if ( dynamic_cast<SecondaryFire*>( game_projectiles.at(i) ) )
         {
-            std::cout << "[*] I see a secondary fire projectile in here !\n";
+            //std::cout << "[*] I see a secondary fire projectile in here !\n";
             if (RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetSecondaryFireMarkerCollision()))
             {
                 player->SetSecondaryFireMarkerActive(false);

@@ -2,6 +2,9 @@
 #include <iostream>
 #include <vector>
 #include "Projectiles.hpp"
+#include "ItemManager.hpp"
+
+class ItemManager;
 
 // Constructor
 Graphics::Graphics(const char* title, int width, int height, int scale)
@@ -90,7 +93,8 @@ SDL_Texture* Graphics::GetTexture(const char* png_path)
 }
 
 // Render content
-void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles) {
+void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list) 
+{
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
     SDL_RenderClear(renderer);
@@ -113,10 +117,38 @@ void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles
         std::cout << "[!] Background failed to render.\n";
     }
 
-    
+    // Render Items from item vector
+    // For Projectile in game_projectiles list, if their dest rect is withing the bounds of the screen, render it
+    for (int i = 0; i < (*item_list).size(); i++)
+    {  
+        // Update position with boundary checks.
+        if ((*item_list).at(i).item_dest_rect.x >= 0 && 
+        (*item_list).at(i).item_dest_rect.x  <= screen_width - (*item_list).at(i).item_dest_rect.w &&
+        (*item_list).at(i).item_dest_rect.y + (*item_list).at(i).item_dest_rect.h >= 0 && 
+        (*item_list).at(i).item_dest_rect.y  <= screen_height) 
+        {
+            if ( 0 != SDL_RenderCopy(renderer, (*item_list).at(i).item_cloud_texture, NULL, &(*item_list).at(i).item_cloud_dest_rect)) //Second arg NULL means use whole png.
+                {
+                    std::cout << "[!] Item failed to render.\n";
+                }
+            
+            if ( 0 != SDL_RenderCopy(renderer, (*item_list).at(i).item_texture, NULL, &(*item_list).at(i).item_dest_rect)) //Second arg NULL means use whole png.
+                {
+                    std::cout << "[!] Item failed to render.\n";
+                }
+        }
+        else
+        {
+            //std::cout << "[*] Need to get rid of this proj\n";
+            (*item_list).erase((*item_list).begin() + i);
+        }
+        
+    }
+
+
     // Render Enemies from enemy vector
 
-    // Render Items from item vector
+   
 
     // For Projectile in game_projectiles list, if their dest rect is withing the bounds of the screen, render it
     for (int i = 0; i < game_projectiles.size(); i++)

@@ -3,6 +3,7 @@
 #include <vector>
 #include "Projectiles.hpp"
 #include "Player.hpp"
+#include "ItemManager.hpp"
 
 class Projectile;
 
@@ -26,6 +27,7 @@ class Game
     private:
         Graphics* graphics_manager;
         SoundManager* sound_manager;
+        ItemManager* item_manager;
         // player
         // enemy spawner
         // item spawner

@@ -5,9 +5,11 @@
 #include "Player.hpp"
 #include <SDL2/SDL_image.h>
 #include "Projectiles.hpp"
+#include "ItemManager.hpp"
 #include <vector>
 
 class Player;
+
 
 class Graphics 
 {
@@ -33,7 +35,7 @@ public:
     SDL_Texture* GetTexture(const char* png_path);
 
     // Render content
-    void render(Player* player, std::vector<Projectile*> &game_projectile);
+    void render(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list);
 
     SDL_Renderer* GetRenderer();
 

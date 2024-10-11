@@ -53,7 +53,7 @@ bool Player::IsFireSecondaryReady()
 
     else
     {
-        std::cout << "[*] Secondary Fire on cooldown\n";
+        //std::cout << "[*] Secondary Fire on cooldown\n";
         return(false);
     }
 }
@@ -71,7 +71,7 @@ bool Player::IsFirePrimaryReady()
 
     else
     {
-        std::cout << "[*] Primary Fire on cooldown\n";
+        //std::cout << "[*] Primary Fire on cooldown\n";
         return(false);
     }
 }
@@ -95,6 +95,10 @@ void Player::SetPosition(int x, int y, int SCREEN_WIDTH, int SCREEN_HEIGHT)
         secondary_fire.hud_dest_rect.y = player_dest_rect.y - (256 + 64);
     }
 
+    if (secondary_fire.marker_active)
+    {
+        secondary_fire.marker_dest_rect.y += 1;
+    }
 }
 
 // Getters and Setters:
