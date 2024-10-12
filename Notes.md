@@ -16,6 +16,7 @@ Things to fix:
 - Projectiles needs to have its animations code cleaned up. Maybe projectiles base class does a tick increment, or a cooldown time based frame change.
 - NO VECTORS FOR ANIMATIONS, ONLY FOR DYNAMIC OBJECTS
 - Vector.reserve(20) for projectiles, maybe 10 enemies. 5 items??
+- Emplace back instead of push back for vectors.
 - Pixel scale needs to be revisited and rethought about, making the collision rectangles weird.
 - Instead of the 7 get  secondary_projectiles function calls, better to get the secondary fire object from player class then grab an attribute.
 - Use const reference when passing data as merely reading values and copying them for short time
