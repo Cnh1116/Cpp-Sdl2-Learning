@@ -17,6 +17,7 @@ Things to fix:
 - NO VECTORS FOR ANIMATIONS, ONLY FOR DYNAMIC OBJECTS
 - Pixel scale needs to be revisited and rethought about, making the collision rectangles weird.
 - Instead of the 7 get  secondary_projectiles function calls, better to get the secondary fire object from player class then grab an attribute.
+- Use const reference when passing data as merely reading values and copying them for short time
 - Clean up code style, comments.
 
 --- Goals ---
