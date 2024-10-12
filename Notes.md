@@ -14,6 +14,7 @@ Game Class: has a player, enemy spawner, item spawner game and debug window
 
 Things to fix:
 - Projectiles needs to have its animations code cleaned up. Maybe projectiles base class does a tick increment, or a cooldown time based frame change.
+- NO VECTORS FOR ANIMATIONS, ONLY FOR DYNAMIC OBJECTS
 - Pixel scale needs to be revisited and rethought about, making the collision rectangles weird.
 - Instead of the 7 get  secondary_projectiles function calls, better to get the secondary fire object from player class then grab an attribute.
 - Clean up code style, comments.
