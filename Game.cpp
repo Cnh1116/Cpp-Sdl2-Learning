@@ -32,6 +32,7 @@ void Game::RunGame()
     // Game LOOP Specific Pieces
     u_long loop = 0;
     std::vector<Projectile*> game_projectiles;
+    game_projectiles.reserve(30);
 
     
     while(false == game_over)

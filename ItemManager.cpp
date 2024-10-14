@@ -9,6 +9,7 @@ ItemManager::ItemManager(Graphics* graphics_manager)
     time_last_item_spawned = 0;
     item_cloud_texture=  graphics_manager->GetTexture(item_cloud_png);
     glass_toucan_texture =  graphics_manager->GetTexture(glass_toucan_png);
+    item_list.reserve(5);
 }
 
 std::vector<ItemManager::item>* ItemManager::GetItemList()
