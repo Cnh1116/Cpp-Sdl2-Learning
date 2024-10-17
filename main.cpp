@@ -4,7 +4,7 @@
 
 //#include <unistd.h> // For sleep
 
-int main()
+int main(int argc, char* argv[])
 {
 	
 	Game my_game;

@@ -1,6 +1,7 @@
 #include "Graphics.hpp"
 #include <iostream>
 #include <vector>
+#include <SDL.h>
 #include "Projectiles.hpp"
 #include "ItemManager.hpp"
 
@@ -14,18 +15,55 @@ Graphics::Graphics(const char* title, int width, int height, int scale)
     screen_width = width;
     screen_height = height;
     pixel_scale = scale;
+
+    // BACKGROUND STUFF
     clouds1_dest = {0, 0, 576 * 4, 324 * 4}; //FILE SIZE * arbitrary scale factor
     
     if (init(title, width, height)) 
     {
         is_shown = true;
     }
+
+    LoadTextures();
+
 }
 
 // Destructor
 Graphics::~Graphics() 
 {
-    cleanup();
+    std::cout << "[*] Cleaning up window.\n";
+
+    for (auto& pair : texture_map) 
+    {
+        SDL_DestroyTexture(pair.second); 
+    }
+    texture_map.clear();
+
+    if (renderer) { SDL_DestroyRenderer(renderer); }
+    if (window) { SDL_DestroyWindow(window); }
+}
+
+void Graphics::LoadTextures()
+{
+    // [ LIST OF TEXTURES ]
+    // Background
+    texture_map["background_texture"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/background-sprites/1.png");
+    texture_map["clouds1_texture"] =  GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/background-sprites/3.png");
+
+    // Player
+    texture_map["player_main_texture"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/player-sprites/player.png");
+    texture_map["player_secondary_fire_hud_texture"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/player-sprites/secondary_fire_hud.png");
+    texture_map["player_secondary_fire_marker_texture"] =  GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/player-sprites/secondary_fire_marker.png");
+
+    // Projectiles
+    texture_map["primary_fire"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/primary_fire_prime.png");
+    texture_map["primary_fire_impact"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/projectile-sprites/secondary_fire_land_effect.png");
+    texture_map["secondary_fire"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/projectile-sprites/secondary_fire_projectile_animation.png");
+    texture_map["secondary_fire_impact"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/projectile-sprites/secondary_fire_land_effect.png");
+
+    // Items
+    texture_map["item_cloud"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/item-sprites/item-cloud.png");
+    texture_map["glass_toucan"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sprites/item-sprites/glass_toucan4.png");
 }
 
 void Graphics::HideWindow()
@@ -93,7 +131,7 @@ SDL_Texture* Graphics::GetTexture(const char* png_path)
 }
 
 // Render content
-void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list) 
+void Graphics::RenderGameItems(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list)
 {
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
@@ -106,33 +144,32 @@ void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles
 
 
     // Render Background
-    if ( 0 != SDL_RenderCopy(renderer, GetTexture(background_png), NULL, NULL) ) //Second arg NULL means use whole png.
+    if ( 0 != SDL_RenderCopy(renderer, texture_map["background_texture"], NULL, NULL) ) //Second arg NULL means use whole png.
     {
         std::cout << "[!] Background failed to render.\n";
     }
 
     // Render Background Clouds
-    if ( 0 != SDL_RenderCopy(renderer, GetTexture(clouds1_png), NULL, &clouds1_dest) ) //Second arg NULL means use whole png.
+    if ( 0 != SDL_RenderCopy(renderer, texture_map["clouds1_texture"], NULL, &clouds1_dest) ) //Second arg NULL means use whole png.
     {
         std::cout << "[!] Background failed to render.\n";
     }
 
     // Render Items from item vector
-    // For Projectile in game_projectiles list, if their dest rect is withing the bounds of the screen, render it
+    // For item in item list, if their dest rect is withing the bounds of the screen, render it
     for (int i = 0; i < (*item_list).size(); i++)
     {  
-        // Update position with boundary checks.
         if ((*item_list).at(i).item_dest_rect.x >= 0 && 
         (*item_list).at(i).item_dest_rect.x  <= screen_width - (*item_list).at(i).item_dest_rect.w &&
         (*item_list).at(i).item_dest_rect.y + (*item_list).at(i).item_dest_rect.h >= 0 && 
         (*item_list).at(i).item_dest_rect.y  <= screen_height) 
         {
-            if ( 0 != SDL_RenderCopy(renderer, (*item_list).at(i).item_cloud_texture, NULL, &(*item_list).at(i).item_cloud_dest_rect)) //Second arg NULL means use whole png.
+            if ( 0 != SDL_RenderCopy(renderer, texture_map["item_cloud"], NULL, &(*item_list).at(i).item_cloud_dest_rect)) //Second arg NULL means use whole png.
                 {
                     std::cout << "[!] Item failed to render.\n";
                 }
             
-            if ( 0 != SDL_RenderCopy(renderer, (*item_list).at(i).item_texture, NULL, &(*item_list).at(i).item_dest_rect)) //Second arg NULL means use whole png.
+            if ( 0 != SDL_RenderCopy(renderer, texture_map["glass_toucan"], NULL, &(*item_list).at(i).item_dest_rect)) //Second arg NULL means use whole png.
                 {
                     std::cout << "[!] Item failed to render.\n";
                 }
@@ -152,44 +189,77 @@ void Graphics::render(Player* player, std::vector<Projectile*> &game_projectiles
 
     // For Projectile in game_projectiles list, if their dest rect is withing the bounds of the screen, render it
     for (int i = 0; i < game_projectiles.size(); i++)
-    {  
-        // Update position with boundary checks.
+    {
+        // Render Projectiles if they're within the screen
         if (game_projectiles.at(i)->GetDstRect()->x >= 0 && 
         game_projectiles.at(i)->GetDstRect()->x  <= screen_width - game_projectiles.at(i)->GetDstRect()->w &&
         game_projectiles.at(i)->GetDstRect()->y + game_projectiles.at(i)->GetDstRect()->h >= 0 && 
         game_projectiles.at(i)->GetDstRect()->y  <= screen_height) 
-        {
-            if ( 0 != SDL_RenderCopy(renderer, game_projectiles.at(i)->GetTexture(), NULL, game_projectiles.at(i)->GetDstRect())) //Second arg NULL means use whole png.
+        {   
+
+            if (0 != SDL_RenderCopy(renderer, texture_map[game_projectiles.at(i)->GetTextureKey()], game_projectiles.at(i)->GetFrame(), game_projectiles.at(i)->GetDstRect())) //Second arg NULL means use whole png.
                 {
                     std::cout << "[!] Proj failed to render.\n";
                 }
         }
+        // If they're not in the screen delete them
         else
         {
-            //std::cout << "[*] Need to get rid of this proj\n";
-            game_projectiles.erase(game_projectiles.begin() + i);
+            game_projectiles.at(i)->UpdateState("delete");
         }
         
     }
 
     // Render Player
-    if ( 0 != SDL_RenderCopy(renderer, player->GetTexture(), NULL, player->GetDstRect())) //Second arg NULL means use whole png.
+    if ( 0 != SDL_RenderCopy(renderer, texture_map["player_main_texture"], NULL, player->GetDstRect())) //Second arg NULL means use whole png.
     {
         std::cout << "[!] Player failed to render.\n";
     }
 
-    if ( 0 != SDL_RenderCopy(renderer, player->GetSecondaryFireTexture(), NULL, player->GetSecondaryFirePosition())) //Second arg NULL means use whole png.
+    if ( 0 != SDL_RenderCopy(renderer, texture_map["player_secondary_fire_hud_texture"], NULL, player->GetSecondaryFirePosition())) //Second arg NULL means use whole png.
     {
         std::cout << "[!] Secondary Fire HUD failed to render.\n";
     }
 
     if (player->IsSecondaryFireMarkerActive())
     {
-        SDL_RenderCopy(renderer, player->GetSecondaryFireMarkerTexture(), NULL, player->GetSecondaryFireMarkerPosition());
+        SDL_RenderCopy(renderer, texture_map["player_secondary_fire_marker_texture"], NULL, player->GetSecondaryFireMarkerPosition());
     }
 
 
     SDL_RenderPresent(renderer);
+
+    // INCREMENT FRAMES
+    // Projectiles
+    for (int i = 0; i < game_projectiles.size(); i++)
+    {
+        
+        if (IsFrameDone(game_projectiles.at(i)->frame_time_ms, game_projectiles.at(i)->last_frame_time))
+        {
+            game_projectiles.at(i)->last_frame_time = SDL_GetTicks();
+            if (game_projectiles.at(i)->animation_replayable)
+            {
+                if (game_projectiles.at(i)->current_frame_index == game_projectiles.at(i)->NumOfFrames() - 1)
+                    game_projectiles.at(i)->current_frame_index = 0;
+                else
+                    game_projectiles.at(i)->AdvanceFrame();
+            }
+
+            else
+            {
+                if (game_projectiles.at(i)->current_frame_index < game_projectiles.at(i)->NumOfFrames() - 1)
+                    game_projectiles.at(i)->AdvanceFrame();
+            }
+        }
+    }
+    //Items
+    for (int i = 0; i < (*item_list).size(); i++)
+    {
+
+        //if ((*item_list).at(i).item_dest_rect.x >= 0 &&
+    }
+
+    //player
 }
 
 int Graphics::GetScreenWidth()
@@ -200,6 +270,22 @@ int Graphics::GetScreenWidth()
 int Graphics::GetScreenHeight()
 {
     return screen_height;
+}
+
+bool Graphics::IsFrameDone(Uint32 frame_time_ms, Uint32 last_frame_start)
+{
+    Uint32 current_time = SDL_GetTicks();
+
+    if ((current_time - last_frame_start) >= frame_time_ms)
+    {
+        return(true);
+    }
+
+    else
+    {
+        //std::cout << "[*] Frame is not done\n";
+        return(false);
+    }
 }
 
 void Graphics::BackgroundUpdate(Uint32 loop)
@@ -224,11 +310,3 @@ SDL_Renderer* Graphics::GetRenderer()
     return renderer;
 }
 
-// Clean up and quit SDL
-void Graphics::cleanup() 
-{
-    std::cout << "[*] Cleaning up window.\n";
-
-    if (renderer) { SDL_DestroyRenderer(renderer); }
-    if (window) { SDL_DestroyWindow(window); }
-}

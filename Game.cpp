@@ -23,14 +23,21 @@ Game::Game() // Game constructor acts as my INIT function for the game.
 
      
     // Play Starting Song
-    sound_manager->PlayMusic(sound_manager->song_1);
+    sound_manager->PlayMusic("first_level_song");
+}
+
+Game::~Game()
+{
+    delete graphics_manager;
+    delete sound_manager;
+    delete item_manager;
 }
 
 void Game::RunGame()
 {
 
     // Game LOOP Specific Pieces
-    u_long loop = 0;
+    long loop = 0;
     std::vector<Projectile*> game_projectiles;
     game_projectiles.reserve(30);
 
@@ -52,23 +59,23 @@ void Game::RunGame()
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~  HANDLE Continous EVENTS    ~
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        const Uint8* keystates = SDL_GetKeyboardState(NULL); //IF DIAGNAOL MOVEMENT NEED TO NORMALIZE THE DISTANCE, DIAGNAL MOVES FASTER!!!!!!!!!!!!!!!!!!!
+        const Uint8* keystates = SDL_GetKeyboardState(NULL);
         float dx = 0, dy = 0;
         if (keystates[SDL_SCANCODE_W])
         {
-            dy = -1;
+            dy = -1.0;
         }
         if (keystates[SDL_SCANCODE_A])
         {
-            dx = -1;
+            dx = -1.0;
         }
         if (keystates[SDL_SCANCODE_S])
         {
-            dy = 1;
+            dy = 1.0;
         }
         if (keystates[SDL_SCANCODE_D])
         {
-            dx = 1;
+            dx = 1.0;
         }
 
         // If we are moving diagnal, we need to normalize the movement
@@ -86,18 +93,18 @@ void Game::RunGame()
             {
                 player.SetSecondaryFireMarkerActive(true);
                 player.SetSecondaryFireMarkerPosition();
-                game_projectiles.push_back(new SecondaryFire(player.GetDstRect()->x, player.GetDstRect()->y,  player.GetSecondaryFireSpeed(), graphics_manager, PIXEL_SCALE));
+                game_projectiles.push_back(new SecondaryFire(player.GetDstRect()->x, player.GetDstRect()->y,  player.GetSecondaryFireSpeed(), PIXEL_SCALE));
 
                 for(int i = 0; i < item_manager->GetItemList()->size(); i++)
                 {
-                    if (RectRectCollision(player.GetSecondaryFireMarkerPosition(), &item_manager->GetItemList()->at(i).item_coll_rect))
+                    if (RectRectCollision(player.GetSecondaryFireMarkerPosition(), &item_manager->GetItemList()->at(i).item_coll_rect, false))
                     {
-                        std::cout << "[*] Player shot an item!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-                        sound_manager->PlaySound("/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sounds/mixkit-unlock-new-item-game-notification-254.wav");
+                        std::cout << "[*] Player shot an item!\n";
+                        sound_manager->PlaySound("item_collection_sound");
                     }
                 }
 
-                sound_manager->PlaySound(sound_manager->sound_2);
+                sound_manager->PlaySound("player_secondary_fire");
                 std::cout << "[*] SPACE CLICK  Pressed. \n";
             }
         }
@@ -107,8 +114,11 @@ void Game::RunGame()
             
             if(player.IsFirePrimaryReady())
             {
-                game_projectiles.push_back(new PrimaryFire(player.GetDstRect()->x, player.GetDstRect()->y, 10.0, graphics_manager, player.GetBaseDamage(), PIXEL_SCALE));
-                sound_manager->PlaySound(sound_manager->sound_1);
+                // IN ORDER TO MAKE DIFF SIZES WORK, PROJECTILES SHOULD GET ENTIRE SDL REC OT PLAYER / ENEMY. Make the 
+                // dest rect of the projectile: X: (player.x + player.w / 2) - (projectile.w / 2)
+                // Make collision rect of the projectile = dest rec for now.
+                game_projectiles.push_back(new PrimaryFire(player.GetDstRect()->x, player.GetDstRect()->y, 5, player.GetBaseDamage(), 2));
+                sound_manager->PlaySound("player_primary_fire");
                 std::cout << "[*] UP Pressed. \n";
             }
         }
@@ -116,7 +126,7 @@ void Game::RunGame()
         /*~~~~~~~~~~~~~~~~~~~~~~~~
         ~  HANDLE COLLISIONS     ~
         ~~~~~~~~~~~~~~~~~~~~~~~~*/
-        HandleCollisions(&player, game_projectiles);
+        HandleCollisions(&player, game_projectiles, item_manager->GetItemList());
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~  UPDATE Players, Projectiles and Enemies     ~
@@ -125,9 +135,19 @@ void Game::RunGame()
 
         player.Update(dx * player.GetSpeed(), dy * player.GetSpeed(), WINDOW_WIDTH, WINDOW_HEIGHT, loop);
 
-        for (Projectile* proj : game_projectiles)
+        for (int i = 0; i < game_projectiles.size();)
         {
-            proj->MoveProjectile(); //proj->update() which calles movePRojectile and should ++animation sprite
+            game_projectiles.at(i)->Update(); //proj->update() which calles movePRojectile and should ++animation sprite
+            if (game_projectiles.at(i)->GetState() == "delete")
+            {
+                std::cout << "[*] Deleting a projectile.\n";
+                delete game_projectiles.at(i);
+                game_projectiles.erase(game_projectiles.begin() + i);
+            }
+            else
+            {
+                ++i;
+            }
         }
 
         item_manager->UpdateItemList();
@@ -136,7 +156,7 @@ void Game::RunGame()
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~  RENDER Player, Projectiles and Enemies     ~
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        graphics_manager->render(&player, game_projectiles, item_manager->GetItemList());
+        graphics_manager->RenderGameItems(&player, game_projectiles, item_manager->GetItemList());
 
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,7 +177,6 @@ void Game::HandleKeyInput(SDL_Event event, Player* player, std::vector<Projectil
             std::cout << "[*] Esc Key Pressed. game_over = True\n";
             game_over = true;
             graphics_manager->DeactivateWindow();
-            graphics_manager->cleanup();
             SDL_Quit();
             
         }
@@ -172,7 +191,7 @@ void Game::HandleKeyInput(SDL_Event event, Player* player, std::vector<Projectil
         if (event.key.keysym.scancode == SDL_SCANCODE_TAB) // TAB //
         {
             std::cout << "[*] TAB Key Pressed.\n";
-            player->SetSpeed( player->GetSpeed() -1 );
+            player->SetSpeed( player->GetSpeed() -1.0 );
             
         }
 
@@ -184,12 +203,12 @@ void Game::HandleKeyInput(SDL_Event event, Player* player, std::vector<Projectil
             {
                 std::cout << "[*] X % 10 == 9. Fading Music out and replaying.\n";
                 sound_manager->FadeOutMusic();
-                sound_manager->PlayMusic(sound_manager->song_1);
+                sound_manager->PlayMusic("first_level_song");
             }
         }
 }
 
-void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_projectiles)
+void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list)
 {
     
     // CHECKING COLLISIONS FOR DIFF PROJECTILES
@@ -197,19 +216,48 @@ void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_proje
     {  
         if ( dynamic_cast<SecondaryFire*>( game_projectiles.at(i) ) )
         {
-            //std::cout << "[*] I see a secondary fire projectile in here !\n";
-            if (RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetSecondaryFireMarkerCollision()))
+            // Once the sec. projectile reaches the sec fire marker, delete it, or play impact animation if it hit item cloud.
+            if (RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetSecondaryFireMarkerCollision(), false))
             {
                 player->SetSecondaryFireMarkerActive(false);
-                game_projectiles.erase(game_projectiles.begin() + i);
+
+                bool collided_with_item = false;
+                for (int j = 0; j < (*item_list).size(); j++)
+                {
+                    if (RectRectCollision(&(*item_list).at(j).item_coll_rect, game_projectiles.at(i)->GetDstRect(), false))
+                    {
+                        collided_with_item = true;
+                        if (game_projectiles.at(i)->GetState() == "main")
+                        {
+                            game_projectiles.at(i)->UpdateState("impact");
+                        }
+                    }
+                }
+                if (!collided_with_item)
+                    game_projectiles.at(i)->UpdateState("delete");
+
+                
+
+                
                 
             }
+
         }
     }
 }
 
-bool Game::RectRectCollision(SDL_Rect* rect_1, SDL_Rect* rect_2)
+bool Game::RectRectCollision(SDL_Rect* rect_1, SDL_Rect* rect_2, bool print_flag)
 {
+    if (print_flag)
+    {
+        std::cout << "X: " << rect_1->x << "Y: " << rect_1->y << "W: " << rect_1->w << "H: " << rect_1->h << " VERSUS " 
+            << "X: " << rect_2->x << "Y: " << rect_2->y << "W: " << rect_2->w << "H: " << rect_2->h << std::endl;
+
+        std::cout << (rect_1->x < rect_2->x + rect_2->w &&
+            rect_1->x + rect_1->w > rect_2->x &&
+            rect_1->y < rect_2->y + rect_2->h &&
+            rect_1->y + rect_1->h > rect_2->y) << std::endl;
+    }
     return (rect_1->x < rect_2->x + rect_2->w &&
             rect_1->x + rect_1->w > rect_2->x &&
             rect_1->y < rect_2->y + rect_2->h &&

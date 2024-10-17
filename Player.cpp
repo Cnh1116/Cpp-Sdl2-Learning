@@ -11,19 +11,16 @@ Player::Player(Graphics* graphics_manager, int PIXEL_SCALE)
     player_source_rect = {32, 32, 32, 32}; // IN RENDER, RENDER COPY USES NULL FOR NOW SO THIS IS MAYBE WRONG / DOESNT MATTER UNTIL ANIMATIONS
     player_speed = 5.0;
 
-    player_texture = graphics_manager->GetTexture(player_sprite_png);
    
     
     secondary_fire.source_rect = {32, 32, 32, 32}; 
     secondary_fire.hud_dest_rect  = {player_dest_rect.x, player_dest_rect.y, BASE_SPRITE_SIZE * image_scale, BASE_SPRITE_SIZE * image_scale};
-    secondary_fire.crosshair = graphics_manager->GetTexture(secondary_fire.hud_png);
-    secondary_fire.marker = graphics_manager->GetTexture(secondary_fire.marker_png);
     secondary_fire.marker_active = false;
 
 }
 
 
-void Player::Update(int x_pos, int y_pos, int SCREEN_WIDTH, int SCREEN_HEIGHT, u_long loop)
+void Player::Update(int x_pos, int y_pos, int SCREEN_WIDTH, int SCREEN_HEIGHT, long loop)
 {
     SetPosition(x_pos, y_pos, SCREEN_WIDTH, SCREEN_HEIGHT);
     // Set animatino state.
@@ -102,15 +99,6 @@ void Player::SetPosition(int x, int y, int SCREEN_WIDTH, int SCREEN_HEIGHT)
 }
 
 // Getters and Setters:
-SDL_Texture* Player::GetTexture()  
-{
-    return player_texture;
-}
-
-void Player::SetTexture(SDL_Texture* texture)
-{
-    player_texture = texture;
-}
 
 SDL_Rect* Player::GetSrcRect()  
 {
@@ -122,7 +110,7 @@ SDL_Rect* Player::GetDstRect()
     return &player_dest_rect;
 }
 
-int Player::GetSpeed()
+float Player::GetSpeed()
 {
     return player_speed;
 }
@@ -130,16 +118,6 @@ int Player::GetSpeed()
 void Player::SetSpeed(float speed)
 {
     player_speed = speed;
-}
-
-SDL_Texture* Player::GetSecondaryFireTexture()
-{
-    return secondary_fire.crosshair;
-}
-
-SDL_Texture* Player::GetSecondaryFireMarkerTexture()
-{
-    return secondary_fire.marker;
 }
 
 SDL_Rect* Player::GetSecondaryFirePosition()
@@ -155,7 +133,7 @@ float Player::GetSecondaryFireSpeed()
 void Player::SetSecondaryFireMarkerPosition()
 {
     secondary_fire.marker_dest_rect = {secondary_fire.hud_dest_rect.x, secondary_fire.hud_dest_rect.y, BASE_SPRITE_SIZE * image_scale, BASE_SPRITE_SIZE * image_scale};
-    secondary_fire.marker_col_rect = {secondary_fire.hud_dest_rect.x, secondary_fire.hud_dest_rect.y, BASE_SPRITE_SIZE, BASE_SPRITE_SIZE};
+    secondary_fire.marker_col_rect = {secondary_fire.hud_dest_rect.x, secondary_fire.hud_dest_rect.y - (secondary_fire.hud_dest_rect.h / 2), BASE_SPRITE_SIZE * image_scale, BASE_SPRITE_SIZE * image_scale};
 }
 
 SDL_Rect* Player::GetSecondaryFireMarkerCollision()

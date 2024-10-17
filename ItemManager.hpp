@@ -1,8 +1,9 @@
 #ifndef ITEMMANAGER_HPP
 #define ITEMMANAGER_HPP
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <vector>
+#include <iostream>
 
 class Graphics;
 
@@ -26,15 +27,15 @@ class ItemManager
         SDL_Texture* GetItemCloudTexture();
 
     private:
-        const char* item_cloud_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/item-sprites/item-cloud.png";
+        std::string item_cloud_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/item-sprites/item-cloud.png";
         SDL_Texture* item_cloud_texture;
 
         Uint32 time_last_item_spawned;
-        Uint32 cooldown_item_spawn_ms = 2000;
+        Uint32 cooldown_item_spawn_ms = 1000;
 
         //ITEMS
         SDL_Texture* glass_toucan_texture;
-        const char*  glass_toucan_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/item-sprites/glass_toucan4.png";
+        std::string  glass_toucan_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/item-sprites/glass_toucan4.png";
 
         std::vector<item> item_list;
 
