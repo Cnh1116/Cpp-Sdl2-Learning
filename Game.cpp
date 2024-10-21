@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Game.hpp"
 #include <iostream>
+#include <string>
 
 
 int PIXEL_SCALE = 4;
@@ -20,10 +21,6 @@ Game::Game() // Game constructor acts as my INIT function for the game.
     player.SetPosition( (WINDOW_WIDTH/2) - (player.GetDstRect()->w / 2), WINDOW_HEIGHT - (player.GetDstRect()->h), WINDOW_WIDTH, WINDOW_HEIGHT );
 
     
-
-     
-    // Play Starting Song
-    sound_manager->PlayMusic("first_level_song");
 }
 
 Game::~Game()
@@ -39,11 +36,24 @@ void Game::RunGame()
     // Game LOOP Specific Pieces
     long loop = 0;
     std::vector<Projectile*> game_projectiles;
+    std::vector<Enemy*> enemies;
     game_projectiles.reserve(30);
+    enemies.reserve(10);
+    
+
+    // Play Starting Song
+    //sound_manager->PlayMusic("first_level_song");
+    
+
 
     
     while(false == game_over)
     {
+        if (enemies.size() == 0)
+        {
+            enemies.emplace_back(new PurpleCrystal({ 400,70,64 * 3,64 * 3 }));
+        }
+        
         Uint32 current_tick = SDL_GetTicks();
         
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +62,6 @@ void Game::RunGame()
         SDL_Event event;
         while (SDL_PollEvent(&event)) 
         {
-            //std::cout << "[*] In RunGame() loop.\n";
             HandleKeyInput(event, &player, game_projectiles);
         }
 
@@ -86,18 +95,24 @@ void Game::RunGame()
             dy /= length;
         }
 
-        if (keystates[SDL_SCANCODE_SPACE]) // SPACE //
+        if (keystates[SDL_SCANCODE_LCTRL])
+        {
+            dx *= 0.6;
+            dy *= 0.6;
+        }
+
+        if (keystates[SDL_SCANCODE_DOWN]) // DOWN //
         {
             
             if(player.IsFireSecondaryReady())
             {
                 player.SetSecondaryFireMarkerActive(true);
                 player.SetSecondaryFireMarkerPosition();
-                game_projectiles.push_back(new SecondaryFire(player.GetDstRect()->x, player.GetDstRect()->y,  player.GetSecondaryFireSpeed(), PIXEL_SCALE));
+                game_projectiles.emplace_back(new SecondaryFire(*player.GetDstRect(),  player.GetSecondaryFireSpeed(), 4));
 
                 for(int i = 0; i < item_manager->GetItemList()->size(); i++)
                 {
-                    if (RectRectCollision(player.GetSecondaryFireMarkerPosition(), &item_manager->GetItemList()->at(i).item_coll_rect, false))
+                    if (RectRectCollision(player.GetSecondaryFireHudColl(), &item_manager->GetItemList()->at(i).item_dest_rect, false))
                     {
                         std::cout << "[*] Player shot an item!\n";
                         sound_manager->PlaySound("item_collection_sound");
@@ -109,6 +124,7 @@ void Game::RunGame()
             }
         }
 
+
         if (keystates[SDL_SCANCODE_UP]) // UP ARROW //
         {
             
@@ -116,8 +132,8 @@ void Game::RunGame()
             {
                 // IN ORDER TO MAKE DIFF SIZES WORK, PROJECTILES SHOULD GET ENTIRE SDL REC OT PLAYER / ENEMY. Make the 
                 // dest rect of the projectile: X: (player.x + player.w / 2) - (projectile.w / 2)
-                // Make collision rect of the projectile = dest rec for now.
-                game_projectiles.push_back(new PrimaryFire(player.GetDstRect()->x, player.GetDstRect()->y, 5, player.GetBaseDamage(), 2));
+                // Make collision rect of the projectile = dest rec for now
+                game_projectiles.emplace_back(new PrimaryFire(*player.GetDstRect(), 5.0, player.GetBaseDamage(), 2));
                 sound_manager->PlaySound("player_primary_fire");
                 std::cout << "[*] UP Pressed. \n";
             }
@@ -126,7 +142,7 @@ void Game::RunGame()
         /*~~~~~~~~~~~~~~~~~~~~~~~~
         ~  HANDLE COLLISIONS     ~
         ~~~~~~~~~~~~~~~~~~~~~~~~*/
-        HandleCollisions(&player, game_projectiles, item_manager->GetItemList());
+        HandleCollisions(&player, game_projectiles, item_manager->GetItemList(), enemies);
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~  UPDATE Players, Projectiles and Enemies     ~
@@ -150,13 +166,35 @@ void Game::RunGame()
             }
         }
 
+        for (int i = 0; i < enemies.size();)
+        {
+            enemies.at(i)->Update(); //proj->update() which calles movePRojectile and should ++animation sprite
+            if (enemies.at(i)->GetState() == "main" &&  enemies.at(i)->IsReadyToAttack())
+            {
+                game_projectiles.emplace_back(new PurpleCrystalFire(enemies.at(i)->enemy_dest_rect, 5.0, 3, enemies.at(i)->base_damage));
+            }
+
+            if (enemies.at(i)->GetState() == "delete")
+            {
+                std::cout << "[*] Deleting an enemy.\n";
+                delete enemies.at(i);
+                enemies.erase(enemies.begin() + i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+
         item_manager->UpdateItemList();
+        //enemies.emplace_back(new PurpleCrystal({ 400,70,64 * 3,64 * 3 }));
+        //UpdateEnemies(enemies);
         
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~  RENDER Player, Projectiles and Enemies     ~
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        graphics_manager->RenderGameItems(&player, game_projectiles, item_manager->GetItemList());
+        graphics_manager->RenderGameItems(&player, game_projectiles, item_manager->GetItemList(), enemies);
 
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,52 +209,48 @@ void Game::RunGame()
 
 void Game::HandleKeyInput(SDL_Event event, Player* player, std::vector<Projectile*>& game_projectiles) //item_vector pointer to spawn item
 {
-
+        
         if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) // ESC //
         {
             std::cout << "[*] Esc Key Pressed. game_over = True\n";
             game_over = true;
             graphics_manager->DeactivateWindow();
-            SDL_Quit();
-            
+            SDL_Quit(); 
         }
-             
-        
+
+        if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) // SPACE //
+        {
+            if (player->GetPlayerState() == "main" && player->IsShieldReady())
+            {
+                player->UpdatePlayerState("shield");
+            }
+        }
+
+        if (event.key.keysym.scancode == SDL_SCANCODE_LSHIFT) // LSHIFT//
+        {
+            if (player->GetPlayerState() == "main" && player->IsDashReady())
+            {
+                sound_manager->PlaySound("dash_sound");
+                player->UpdatePlayerState("dash");
+            }
+        }
+                   
         if (event.key.keysym.scancode == SDL_SCANCODE_BACKSLASH) // ` //
         {
             std::cout << "[*] ` Key Pressed.\n";
             
         }
-
-        if (event.key.keysym.scancode == SDL_SCANCODE_TAB) // TAB //
-        {
-            std::cout << "[*] TAB Key Pressed.\n";
-            player->SetSpeed( player->GetSpeed() -1.0 );
-            
-        }
-
-        if (event.key.keysym.scancode == SDL_SCANCODE_X) // x //
-        {
-            std::cout << "[*] X Key Pressed. Incrementing variable.\n";
-            times_X_pressed++;
-            if ( 9 == ( times_X_pressed % 10 ) )
-            {
-                std::cout << "[*] X % 10 == 9. Fading Music out and replaying.\n";
-                sound_manager->FadeOutMusic();
-                sound_manager->PlayMusic("first_level_song");
-            }
-        }
 }
 
-void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list)
+void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list, std::vector<Enemy*>& enemies)
 {
     
     // CHECKING COLLISIONS FOR DIFF PROJECTILES
     for (int i = 0; i < game_projectiles.size(); i++)
     {  
+        // ITEM COLLECTION
         if ( dynamic_cast<SecondaryFire*>( game_projectiles.at(i) ) )
         {
-            // Once the sec. projectile reaches the sec fire marker, delete it, or play impact animation if it hit item cloud.
             if (RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetSecondaryFireMarkerCollision(), false))
             {
                 player->SetSecondaryFireMarkerActive(false);
@@ -224,25 +258,77 @@ void Game::HandleCollisions(Player* player, std::vector<Projectile*> &game_proje
                 bool collided_with_item = false;
                 for (int j = 0; j < (*item_list).size(); j++)
                 {
-                    if (RectRectCollision(&(*item_list).at(j).item_coll_rect, game_projectiles.at(i)->GetDstRect(), false))
+                    if (RectRectCollision(&(*item_list).at(j).item_cloud_coll_rect, game_projectiles.at(i)->GetCollisionRect(), false))
                     {
                         collided_with_item = true;
                         if (game_projectiles.at(i)->GetState() == "main")
                         {
+                            sound_manager->PlaySound("player_secondary_fire_impact");
                             game_projectiles.at(i)->UpdateState("impact");
                         }
                     }
                 }
                 if (!collided_with_item)
-                    game_projectiles.at(i)->UpdateState("delete");
+                    game_projectiles.at(i)->UpdateState("delete");  
+            }
+        }
+        // ENEMY PROJEC HURTING PLAYER
 
+
+        if (!game_projectiles.at(i)->player_projectile)
+        {
+            
+
+            if (game_projectiles.at(i)->GetState() == "main")
+            {
+                if (player->GetPlayerState() == "main" && RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetCollRect(), false))
+                {
+                    sound_manager->PlaySound("player_hit");
+                    game_projectiles.at(i)->UpdateState("impact");
+                    std::cout << "[*] Hurting the player. STATE: " << player->GetPlayerState() << std::endl;
+                    player->ChangeHealth(-game_projectiles.at(i)->damage);
+                }
+
+                if (player->GetPlayerState() == "shield" && RectRectCollision(game_projectiles.at(i)->GetDstRect(), player->GetShieldColl(), false))
+                {
+                    sound_manager->PlaySound("player_shield_hit");
+                    game_projectiles.at(i)->UpdateState("impact");
+                }
+            }
+
+
+        }
+
+        for (int k = 0; k < enemies.size(); k++)
+        {
+            // PLAYER PROJ HURTING ENEMIES
+            if (game_projectiles.at(i)->player_projectile && RectRectCollision(game_projectiles.at(i)->GetDstRect(), enemies.at(k)->GetCollRect(), false))
+            {
+
+                if (game_projectiles.at(i)->GetState() == "main")
+                {
+                    sound_manager->PlaySound("player_hit");
+                    game_projectiles.at(i)->UpdateState("impact");
+                    enemies.at(k)->ChangeHealth(-game_projectiles.at(i)->damage);
+
+                    if (enemies.at(k)->GetHealth() <= 0)
+                    {
+                        enemies.at(k)->UpdateState("death");
+                    }
+                }
                 
-
                 
                 
             }
-
         }
+    }
+}
+
+void Game::UpdateEnemies(std::vector<Enemy*> &enemies)
+{
+    if (enemies.size() == 0)
+    {
+        enemies.emplace_back(new PurpleCrystal({ 400,70,64 * 3,64 * 3 }));
     }
 }
 

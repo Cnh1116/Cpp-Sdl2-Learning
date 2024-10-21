@@ -14,17 +14,25 @@ SoundManager::SoundManager()
 
     if(0 > Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096))
     {
-        std::cout << "[!] Mix_OpenAudio did not return 0 code.\n" << Mix_GetError() << std::endl;
+        std::cout << "[!] Mix_OpenAudio did not return 0 code./n" << Mix_GetError() << std::endl;
         exit(1);
     }
 
 
     
-    LoadSoundEffect("player_primary_fire", "C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sounds/mixkit-glass-hitting-a-metal-2183.wav");
-    LoadSoundEffect("player_secondary_fire", "C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sounds/mixkit-glass-hitting-a-metal-2183.wav");
-    LoadSoundEffect("item_collection_sound", "C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/sounds/mixkit-unlock-new-item-game-notification-254.wav");
+    LoadSoundEffect("player_primary_fire", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/cinematic-wind-swoosh-1471.wav");
+    LoadSoundEffect("player_secondary_fire", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/fast-air-zoom-2625.wav");
+    LoadSoundEffect("player_secondary_fire_impact", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/falling-on-foil-748.wav");
+    LoadSoundEffect("player_hit", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/player_hit.wav");
+    LoadSoundEffect("player_shield_activate", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/fast-air-zoom-2625.wav");
+    LoadSoundEffect("player_shield_hit", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/jade-drum.wav");
+    LoadSoundEffect("dash_sound", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/whoosh-wind-sweep-2632.wav");
 
-    music_map["first_level_song"] = "C:/Users/cnh11/OneDrive/Desktop/Cpp-Sdl2-Learning/assets/music/ChrisChristodoulou-TheyMightAsWellBeDeadROR2_SurvivorsoftheVoid(2022).mp3";
+
+    LoadSoundEffect("item_collection_sound", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/unlock-new-item-game-notification-254.wav");
+    
+
+    music_map["first_level_song"] = "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/music/ChrisChristodoulou-TheyMightAsWellBeDeadROR2_SurvivorsoftheVoid(2022).mp3";
 }
 
 SoundManager::~SoundManager()
@@ -68,7 +76,7 @@ void SoundManager::PlaySound(const char* sound_map_key)
 void SoundManager::PlayMusic(const char* music_key) 
 {
     Mix_Music* music = Mix_LoadMUS(music_map[music_key]);
-    std::cout << "[*] Playing the sound effect " << music_map[music_key] << std::endl;
+    //std::cout << "[*] Playing the sound effect " << music_map[music_key] << std::endl;
     if (!music) 
     {
         std::cerr << "[!] Failed to load MP3 file: " << Mix_GetError() << std::endl;  

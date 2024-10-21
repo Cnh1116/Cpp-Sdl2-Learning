@@ -1,12 +1,18 @@
 #ifndef GRAPHICS_HPP
 #define GRAPHICS_HPP
 
-#include <SDL2/SDL.h>
-#include "Player.hpp"
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <vector>
+#include <map>
+#include <memory>
+#include <SDL_ttf.h>
+
 #include "Projectiles.hpp"
 #include "ItemManager.hpp"
-#include <vector>
+#include "Player.hpp"
+#include "Enemy.hpp"
+
 
 class Player;
 
@@ -16,33 +22,30 @@ class Graphics
 public:
     // Constructor
     Graphics(const char* title, int width, int height, int pixel_scale);
-
-    // Destructor
     ~Graphics();
 
-    //Hide Window 
+    //Window Manipulation
     void HideWindow();
-
     void ShowWindow();
-
-    //Show Window
-
-    // Clean up and quit SDL
-    void cleanup();
-
     void DeactivateWindow();
 
+    // Text
+    void RenderPlayerText(Player* player);
+
+    // Textures
+    void LoadTextures();
     SDL_Texture* GetTexture(const char* png_path);
 
-    // Render content
-    void render(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list);
+    void RenderText(const std::string& text, const SDL_Rect& rect, SDL_Color color);
+    void RenderGameItems(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list, std::vector<Enemy*>& enemies);
+    void BackgroundUpdate(Uint32 loop);
 
-    SDL_Renderer* GetRenderer();
 
     int GetScreenHeight();
     int GetScreenWidth();
 
-    void BackgroundUpdate(Uint32 loop);
+    SDL_Renderer* GetRenderer();
+
 
     
 
@@ -51,8 +54,6 @@ private:
     SDL_Renderer* renderer;
 
     // Background Stuff
-    const char* background_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/background-sprites/1.png";
-    const char* clouds1_png = "/home/monkey-d-luffy/Cpp-Sdl2-Learning/assets/sprites/background-sprites/3.png";
     SDL_Rect clouds1_src, clouds1_dest;
     int clouds1_animation_index;
 
@@ -62,12 +63,14 @@ private:
     
     bool is_shown;
 
+    std::map<std::string, SDL_Texture*> texture_map;
+    TTF_Font* font_1;
+    
+    
     // Initialize SDL, create window and renderer
     bool init(const char* title, int width, int height);
 
-
-    // Update game logic
-    void update();
+    bool IsFrameDone(Uint32 frame_time_ms, Uint32 last_frame_time);
 
     
 

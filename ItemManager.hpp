@@ -13,11 +13,9 @@ class ItemManager
     public:
        struct item
         {
-            SDL_Texture* item_texture;
             SDL_Rect item_dest_rect;
-            SDL_Rect item_coll_rect;
-            SDL_Texture* item_cloud_texture;
             SDL_Rect item_cloud_dest_rect;
+            SDL_Rect item_cloud_coll_rect;
             // rarity?
         };
 
@@ -31,7 +29,7 @@ class ItemManager
         SDL_Texture* item_cloud_texture;
 
         Uint32 time_last_item_spawned;
-        Uint32 cooldown_item_spawn_ms = 1000;
+        Uint32 cooldown_item_spawn_ms = 3000;
 
         //ITEMS
         SDL_Texture* glass_toucan_texture;

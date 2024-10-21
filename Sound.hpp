@@ -7,8 +7,8 @@ class SoundManager
     public:
         SoundManager(); //Maybe give directory where sounds are ??
         ~SoundManager();
-        void PlaySound(const char* wav_file_path);
-        void PlayMusic(const char* mp3_file_path);
+        void PlaySound(const char* sound_key);
+        void PlayMusic(const char* song_key);
         void FadeOutMusic();
         
 
