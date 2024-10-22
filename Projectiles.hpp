@@ -88,9 +88,9 @@ public:
     
 };
 
-class PurpleCrystalFire : public Projectile {
+class IceShard : public Projectile {
 public:
-    PurpleCrystalFire(const SDL_Rect& dest_rect, float projectile_speed, int PIXEL_SCALE, float damage);
+    IceShard(const SDL_Rect& dest_rect, float projectile_speed, int PIXEL_SCALE, float damage);
     void MoveProjectile() override;
     void Update() override;
 

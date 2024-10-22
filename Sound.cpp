@@ -20,19 +20,19 @@ SoundManager::SoundManager()
 
 
     
-    LoadSoundEffect("player_primary_fire", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/cinematic-wind-swoosh-1471.wav");
-    LoadSoundEffect("player_secondary_fire", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/fast-air-zoom-2625.wav");
-    LoadSoundEffect("player_secondary_fire_impact", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/falling-on-foil-748.wav");
-    LoadSoundEffect("player_hit", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/player_hit.wav");
-    LoadSoundEffect("player_shield_activate", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/fast-air-zoom-2625.wav");
-    LoadSoundEffect("player_shield_hit", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/jade-drum.wav");
-    LoadSoundEffect("dash_sound", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/whoosh-wind-sweep-2632.wav");
+    LoadSoundEffect("player_primary_fire", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/cinematic-wind-swoosh-1471.wav");
+    LoadSoundEffect("player_secondary_fire", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/fast-air-zoom-2625.wav");
+    LoadSoundEffect("player_secondary_fire_impact", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/falling-on-foil-748.wav");
+    LoadSoundEffect("player_hit", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/player_hit.wav");
+    LoadSoundEffect("player_shield_activate", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/fast-air-zoom-2625.wav");
+    LoadSoundEffect("player_shield_hit", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/jade-drum.wav");
+    LoadSoundEffect("dash_sound", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/whoosh-wind-sweep-2632.wav");
 
 
-    LoadSoundEffect("item_collection_sound", "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sounds/unlock-new-item-game-notification-254.wav");
+    LoadSoundEffect("item_collection_sound", "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sounds/unlock-new-item-game-notification-254.wav");
     
 
-    music_map["first_level_song"] = "C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/music/ChrisChristodoulou-TheyMightAsWellBeDeadROR2_SurvivorsoftheVoid(2022).mp3";
+    music_map["first_level_song"] = "G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/soundsmusic/ChrisChristodoulou-TheyMightAsWellBeDeadROR2_SurvivorsoftheVoid(2022).mp3";
 }
 
 SoundManager::~SoundManager()

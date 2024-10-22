@@ -5,8 +5,8 @@
 
 
 int PIXEL_SCALE = 4;
-int WINDOW_WIDTH = 2000;
-int WINDOW_HEIGHT = 1000;
+int WINDOW_WIDTH = 1920;
+int WINDOW_HEIGHT = 1080;
 float MAX_FPS = 60.0;
 
 Game::Game() // Game constructor acts as my INIT function for the game.
@@ -171,7 +171,7 @@ void Game::RunGame()
             enemies.at(i)->Update(); //proj->update() which calles movePRojectile and should ++animation sprite
             if (enemies.at(i)->GetState() == "main" &&  enemies.at(i)->IsReadyToAttack())
             {
-                game_projectiles.emplace_back(new PurpleCrystalFire(enemies.at(i)->enemy_dest_rect, 5.0, 3, enemies.at(i)->base_damage));
+                game_projectiles.emplace_back(new IceShard(enemies.at(i)->enemy_dest_rect, 5.0, 3, enemies.at(i)->base_damage));
             }
 
             if (enemies.at(i)->GetState() == "delete")

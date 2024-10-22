@@ -32,7 +32,7 @@ Graphics::Graphics(const char* title, int width, int height, int scale)
 
     LoadTextures();
 
-    font_1 = TTF_OpenFont("C:/Users/cnh11/OneDrive/Desktop/video-game-asset-stock/Fonts/bulan-ramadhan-font/BulanRamadhan-YzRYL.ttf",50);
+    font_1 = TTF_OpenFont("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/fonts/bulan-ramadhan-font/BulanRamadhan-YzRYL.ttf",50);
     if (!font_1) 
     {
         std::cout << "[!] font 1 not initialized.";
@@ -43,7 +43,7 @@ Graphics::Graphics(const char* title, int width, int height, int scale)
 // Destructor
 Graphics::~Graphics() 
 {
-    std::cout << "[*] Cleaning up window.\n";
+    std::cout << "[*] Cleaning up window./n";
 
     for (auto& pair : texture_map) 
     {
@@ -61,30 +61,33 @@ void Graphics::LoadTextures()
 {
     // [ LIST OF TEXTURES ]
     // Background
-    texture_map["background_texture"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/background-sprites/1.png");
-    texture_map["clouds1_texture"] =  GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/background-sprites/4.png");
+    texture_map["background_texture"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/background-sprites/1.png");
+    texture_map["clouds1_texture"] =  GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/background-sprites/4.png");
 
     // Player
-    texture_map["player_main_texture"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/player-sprites/zephyr.png");
-    texture_map["player_secondary_fire_hud_texture"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/player-sprites/secondary_fire_hud.png");
-    texture_map["player_secondary_fire_marker_texture"] =  GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/player-sprites/secondary_fire_marker.png");
-    texture_map["player_shield"] = GetTexture("G:/My Drive/PC-Space/assets/sprites/player-sprites/player_shield.png");
+    texture_map["player_main_texture"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/player-sprites/zephyr.png");
+    texture_map["player_secondary_fire_hud_texture"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/player-sprites/secondary_fire_hud.png");
+    texture_map["player_secondary_fire_marker_texture"] =  GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/player-sprites/secondary_fire_marker.png");
+    texture_map["player_shield"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/player-sprites/player_shield.png");
 
     // Projectiles
-    texture_map["primary_fire"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/projectile-sprites/primary_fire.png");
-    texture_map["primary_fire_impact"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/projectile-sprites/primary_fire_impact.png");
-    texture_map["secondary_fire"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/projectile-sprites/secondary_fire.png");
-    texture_map["secondary_fire_impact"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/projectile-sprites/secondary_fire_impact.png");
-    texture_map["purple_crystal_projectile"] =  GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/projectile-sprites/purple_projectile.png");
-    texture_map["purple_crystal_projectile_impact"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/projectile-sprites/purple_crystal_impact.png");
+    texture_map["primary_fire"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/primary_fire.png");
+    texture_map["primary_fire_impact"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/primary_fire_impact.png");
+    texture_map["secondary_fire"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/secondary_fire.png");
+    texture_map["secondary_fire_impact"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/secondary_fire_impact.png");
+    //texture_map["purple_crystal_projectile"] =  GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/purple_projectile.png");
+    //texture_map["purple_crystal_projectile_impact"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/purple_crystal_impact.png");
+    texture_map["ice_shard_conjure"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/Ice_Shard_Cast.png");
+    texture_map["ice_shard"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/Ice_shard.png");
+    texture_map["ice_shard_impact"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/projectile-sprites/Ice_Shard_Hit.png");
 
     // Items
-    texture_map["item_cloud"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/item-sprites/item_cloud.png");
-    texture_map["glass_toucan"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/Phoenix-Shooter/assets/sprites/item-sprites/glass_toucan.png");
+    texture_map["item_cloud"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/item-sprites/item_cloud.png");
+    texture_map["glass_toucan"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/item-sprites/glass_toucan.png");
 
     // Enemies
-    texture_map["purple_crystal_main"] = GetTexture("C:/Users/cnh11/OneDrive/Desktop/video-game-asset-stock/Magic-Crystals/Magic Crystal by Creativekind/crystals-no-chains.png");
-    texture_map["purple_crystal_death"] = GetTexture("G:/My Drive/PC-Space/video-game-asset-stock/Magic-Crystals/Magic Crystal Destruction by Creativekind/purple_crystal_death.png");
+    texture_map["purple_crystal_main"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/enemies-sprites/light_blue.png");
+    texture_map["purple_crystal_death"] = GetTexture("G:/My Drive/PC-Space/Video-Game-Stuff/Zephyr-the-Avenger/assets/sprites/enemies-sprites/light_blue_destr.png");
 }
 
 void Graphics::HideWindow()
@@ -161,7 +164,7 @@ SDL_Texture* Graphics::GetTexture(const char* png_path)
 void Graphics::RenderGameItems(Player* player, std::vector<Projectile*> &game_projectiles, std::vector<ItemManager::item>* item_list, std::vector<Enemy*>& enemies)
 {
     
-    bool draw_collision_boxes = true;
+    bool draw_collision_boxes = false;
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
     SDL_RenderClear(renderer);
 

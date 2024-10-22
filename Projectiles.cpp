@@ -192,15 +192,15 @@ void SecondaryFire::MoveProjectile()
 
 //PURPLE CRYSTAL FIRE
 
-PurpleCrystalFire::PurpleCrystalFire(const SDL_Rect& dest_rect, float projectile_speed, int PIXEL_SCALE, float damage)
-    : Projectile({ (dest_rect.x + dest_rect.w / 2) - (32 * PIXEL_SCALE / 2), dest_rect.y, 32 * PIXEL_SCALE, 32 * PIXEL_SCALE }, projectile_speed, damage, false, "purple_crystal_projectile", { {0,0,32,32}, {32,0,32,32}, {64,0,32,32}, {96,0,32,32}, {128,0,32,32} }, "purple_crystal_projectile_impact", { {0,0,32,32}, {32,0,32,32}, {64,0,32,32}, {96,0,32,32} }, 200, true, true)
+IceShard::IceShard(const SDL_Rect& dest_rect, float projectile_speed, int PIXEL_SCALE, float damage)
+    : Projectile({ (dest_rect.x + dest_rect.w / 2) - (32 * PIXEL_SCALE / 2), dest_rect.y, 32 * PIXEL_SCALE, 32 * PIXEL_SCALE }, projectile_speed, damage, false, "ice_shard", { {0,0,32,32}, {32,0,32,32}, {64,0,32,32}, {96,0,32,32}, {128,0,32,32}, {160,0,32,32}, {0,32,32,32}, {32,32,32,32}, {64,32,32,32}, {96,32,32,32}, {128,32,32,32}, {160,32,32,32}, {0,64,32,32}, {32,64,32,32}, {64,64,32,32} }, "ice_shard_impact", { {0,0,32,32}, {32,0,32,32}, {64,0,32,32}, {96,0,32,32}, {128,0,32,32} }, 120, true, false)
 {}
-void PurpleCrystalFire::MoveProjectile()
+void IceShard::MoveProjectile()
 {
     dest_rect.y += speed;
 }
 
-void PurpleCrystalFire::Update()
+void IceShard::Update()
 {
     if (state == "main")
     {
@@ -215,7 +215,7 @@ void PurpleCrystalFire::Update()
     {
         collision_rect = { 0,0,0,0 };
         current_frames = impact_frames;
-        current_texture_key = "purple_crystal_projectile_impact";
+        current_texture_key = "ice_shard_impact";
         if (current_frame_index >= impact_frames.size() - 1)
         {
             state = "delete";
